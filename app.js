@@ -9,66 +9,83 @@ const state = {
 
 const byId = (id) => document.getElementById(id);
 
-const els = {
-  grid: byId("laptopGrid"),
+const elements = {
+  laptopGrid: byId("laptopGrid"),
   accessoryGrid: byId("accessoryGrid"),
-  empty: byId("emptyState"),
+  emptyState: byId("emptyState"),
   resultCount: byId("resultCount"),
   accessoryCount: byId("accessoryCount"),
-  search: byId("searchInput"),
-  brand: byId("brandFilter"),
-  processor: byId("processorFilter"),
-  ram: byId("ramFilter"),
-  storage: byId("storageFilter"),
-  price: byId("priceFilter"),
-  sort: byId("sortFilter"),
-  clear: byId("clearFilters"),
+
+  searchInput: byId("searchInput"),
+  brandFilter: byId("brandFilter"),
+  processorFilter: byId("processorFilter"),
+  ramFilter: byId("ramFilter"),
+  storageFilter: byId("storageFilter"),
+  priceFilter: byId("priceFilter"),
+  sortFilter: byId("sortFilter"),
+
+  clearFilters: byId("clearFilters"),
   filterToggle: byId("filterToggle"),
   filterPanel: byId("filterPanel"),
   filterBadge: byId("filterBadge"),
   browseLaptops: byId("browseLaptops")
 };
 
-const formatPrice = (value) => {
+/* -------------------------------------------------------
+   Utility functions
+------------------------------------------------------- */
+
+function formatPrice(value) {
+  const number = Number(value);
+
+  if (!Number.isFinite(number)) {
+    return "Price on request";
+  }
+
   return new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency: "INR",
     maximumFractionDigits: 0
-  }).format(Number(value));
-};
+  }).format(number);
+}
 
-const unique = (values) => {
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>'"]/g, (character) => {
+    const entities = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      "'": "&#39;",
+      '"': "&quot;"
+    };
+
+    return entities[character];
+  });
+}
+
+function safeClassName(value) {
+  return String(value ?? "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9-_]/g, "");
+}
+
+function unique(values) {
   return [...new Set(values.filter(Boolean))].sort((a, b) =>
     String(a).localeCompare(String(b), undefined, {
       numeric: true,
       sensitivity: "base"
     })
   );
-};
+}
 
-const escapeHtml = (value) => {
-  return String(value ?? "").replace(
-    /[&<>'"]/g,
-    (character) =>
-      ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        "'": "&#39;",
-        '"': "&quot;"
-      })[character]
-  );
-};
+function populateSelect(selectElement, values) {
+  if (!selectElement) {
+    return;
+  }
 
-const safeClassName = (value) => {
-  return String(value ?? "")
-    .toLowerCase()
-    .replace(/[^a-z0-9-_]/g, "");
-};
-
-function populateSelect(select, values) {
   values.forEach((value) => {
-    select.add(new Option(value, value));
+    selectElement.add(new Option(value, value));
   });
 }
 
@@ -76,6 +93,7 @@ function buildSearchText(item) {
   return [
     item.brand,
     item.model,
+    item.name,
     item.processor,
     item.processorFamily,
     item.ram,
@@ -84,36 +102,69 @@ function buildSearchText(item) {
     item.display,
     item.operatingSystem,
     item.availabilityLabel,
-    ...(item.features || [])
+    item.category,
+    item.productType,
+    ...(Array.isArray(item.features) ? item.features : [])
   ]
     .filter(Boolean)
     .join(" ")
     .toLowerCase();
 }
 
-function filteredLaptops() {
-  const query = els.search.value.trim().toLowerCase();
-  const maxPrice = Number(els.price.value || Infinity);
+/* -------------------------------------------------------
+   Laptop filtering
+------------------------------------------------------- */
+
+function getFilteredLaptops() {
+  const searchValue =
+    elements.searchInput?.value.trim().toLowerCase() || "";
+
+  const selectedBrand =
+    elements.brandFilter?.value || "";
+
+  const selectedProcessor =
+    elements.processorFilter?.value || "";
+
+  const selectedRam =
+    elements.ramFilter?.value || "";
+
+  const selectedStorage =
+    elements.storageFilter?.value || "";
+
+  const selectedPrice =
+    elements.priceFilter?.value || "";
+
+  const selectedSort =
+    elements.sortFilter?.value || "newest";
+
+  const maximumPrice = selectedPrice
+    ? Number(selectedPrice)
+    : Infinity;
 
   return state.laptops
     .filter((item) => {
       const matchesSearch =
-        !query || buildSearchText(item).includes(query);
+        !searchValue ||
+        buildSearchText(item).includes(searchValue);
 
       const matchesBrand =
-        !els.brand.value || item.brand === els.brand.value;
+        !selectedBrand ||
+        item.brand === selectedBrand;
 
       const matchesProcessor =
-        !els.processor.value ||
-        item.processorFamily === els.processor.value;
+        !selectedProcessor ||
+        item.processorFamily === selectedProcessor;
 
       const matchesRam =
-        !els.ram.value || item.ram === els.ram.value;
+        !selectedRam ||
+        item.ram === selectedRam;
 
       const matchesStorage =
-        !els.storage.value || item.storage === els.storage.value;
+        !selectedStorage ||
+        item.storage === selectedStorage;
 
-      const matchesPrice = Number(item.price) <= maxPrice;
+      const matchesPrice =
+        Number(item.price) <= maximumPrice;
 
       return (
         matchesSearch &&
@@ -124,45 +175,87 @@ function filteredLaptops() {
         matchesPrice
       );
     })
-    .sort((a, b) => {
-      switch (els.sort.value) {
+    .sort((first, second) => {
+      switch (selectedSort) {
         case "price-asc":
-          return Number(a.price) - Number(b.price);
+          return Number(first.price) - Number(second.price);
 
         case "price-desc":
-          return Number(b.price) - Number(a.price);
+          return Number(second.price) - Number(first.price);
 
         case "brand":
-          return `${a.brand} ${a.model}`.localeCompare(
-            `${b.brand} ${b.model}`
+          return `${first.brand} ${first.model}`.localeCompare(
+            `${second.brand} ${second.model}`
           );
 
         case "newest":
         default:
-          return new Date(b.addedAt) - new Date(a.addedAt);
+          return (
+            new Date(second.addedAt || 0) -
+            new Date(first.addedAt || 0)
+          );
       }
     });
 }
 
-function createWhatsAppUrl(item) {
+/* -------------------------------------------------------
+   WhatsApp links
+------------------------------------------------------- */
+
+function createLaptopWhatsAppUrl(item) {
   const message = [
     "Hello HARDNSOFT,",
     "",
-    `I am interested in the ${item.brand} ${item.model}.`,
-    `Processor: ${item.processor}`,
-    `RAM: ${item.ram}`,
-    `Storage: ${item.storage}`,
-    `Graphics: ${item.graphics || "Integrated graphics"}`,
-    `Our price: ${formatPrice(item.price)}`,
-    "Warranty: 1 year",
+    "I saw this laptop in your Onam Dhamakka Sale 2026.",
     "",
-    "Please confirm current availability."
-  ].join("\n");
+    `Laptop: ${item.brand || ""} ${item.model || ""}`,
+    `Processor: ${item.processor || "Not specified"}`,
+    `RAM: ${item.ram || "Not specified"}`,
+    `Storage: ${item.storage || "Not specified"}`,
+    `Graphics: ${item.graphics || "Integrated graphics"}`,
+    `Selling price: ${formatPrice(item.price)}`,
+    item.mrp ? `MRP: ${formatPrice(item.mrp)}` : "",
+    `Warranty: ${item.warranty || "1 year"}`,
+    "",
+    "Please confirm availability and the final Onam offer."
+  ]
+    .filter(Boolean)
+    .join("\n");
 
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
     message
   )}`;
 }
+
+function createAccessoryWhatsAppUrl(item) {
+  const message = [
+    "Hello HARDNSOFT,",
+    "",
+    "I saw this accessory in your Onam Dhamakka Sale 2026.",
+    "",
+    `Product: ${item.name || "Accessory"}`,
+    item.brand ? `Brand: ${item.brand}` : "",
+    item.model ? `Model: ${item.model}` : "",
+    item.productType ? `Type: ${item.productType}` : "",
+    item.connection ? `Connection: ${item.connection}` : "",
+    item.layout ? `Layout: ${item.layout}` : "",
+    `Selling price: ${formatPrice(item.price)}`,
+    item.mrp ? `MRP: ${formatPrice(item.mrp)}` : "",
+    item.warranty ? `Warranty: ${item.warranty}` : "",
+    "",
+    "Please confirm availability and the final Onam offer."
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+    message
+  )}`;
+}
+
+/* -------------------------------------------------------
+   Pricing
+------------------------------------------------------- */
 
 function buildPricingHtml(item) {
   const price = Number(item.price);
@@ -195,7 +288,7 @@ function buildPricingHtml(item) {
       <div class="price-main-row">
         <div class="price-side">
           <div class="our-price-label">
-            ${escapeHtml(item.priceLabel || "Our price")}
+            ${escapeHtml(item.priceLabel || "Onam price")}
           </div>
 
           <div class="price">
@@ -223,9 +316,15 @@ function buildPricingHtml(item) {
   `;
 }
 
+/* -------------------------------------------------------
+   Processor image
+------------------------------------------------------- */
+
 function processorImageHtml(item) {
   const processorName = escapeHtml(
-    item.processorFamily || item.processor
+    item.processorFamily ||
+    item.processor ||
+    "Processor"
   );
 
   if (!item.processorImage) {
@@ -262,16 +361,23 @@ function processorImageHtml(item) {
   `;
 }
 
+/* -------------------------------------------------------
+   Laptop cards
+------------------------------------------------------- */
+
 function laptopCard(item) {
   const features = Array.isArray(item.features)
     ? item.features.slice(0, 3)
     : [];
 
-  const featuresHtml = features.length
+  const featureHtml = features.length
     ? `
       <ul class="feature-list">
         ${features
-          .map((feature) => `<li>${escapeHtml(feature)}</li>`)
+          .map(
+            (feature) =>
+              `<li>${escapeHtml(feature)}</li>`
+          )
           .join("")}
       </ul>
     `
@@ -282,17 +388,24 @@ function laptopCard(item) {
       <div class="card-visual ${safeClassName(item.brand)}">
         <div class="visual-header">
           <span class="availability-badge">
-            ${escapeHtml(item.availabilityLabel || "Available")}
+            ${escapeHtml(
+              item.availabilityLabel || "Onam offer"
+            )}
           </span>
 
           <div class="brand-mark">
-            ${escapeHtml(item.brand)}
+            ${escapeHtml(item.brand || "Laptop")}
           </div>
         </div>
 
-        <div class="product-laptop-art" aria-hidden="true">
+        <div
+          class="product-laptop-art"
+          aria-hidden="true"
+        >
           <div class="product-laptop-screen">
-            <span>${escapeHtml(item.model)}</span>
+            <span>
+              ${escapeHtml(item.model || "Laptop")}
+            </span>
           </div>
 
           <div class="product-laptop-base"></div>
@@ -301,44 +414,54 @@ function laptopCard(item) {
 
       <div class="card-body">
         <p class="model-label">
-          ${escapeHtml(item.brand)}
+          ${escapeHtml(item.brand || "Laptop")}
         </p>
 
-        <h2>${escapeHtml(item.model)}</h2>
+        <h2>
+          ${escapeHtml(item.model || "Laptop model")}
+        </h2>
 
         <div class="processor-banner">
           ${processorImageHtml(item)}
 
           <div>
             <small>Processor</small>
-            <strong>${escapeHtml(item.processor)}</strong>
+
+            <strong>
+              ${escapeHtml(
+                item.processor || "Not specified"
+              )}
+            </strong>
           </div>
         </div>
 
         <div class="compact-spec-row">
           <div class="compact-spec">
             <span class="compact-icon">RAM</span>
-
             <small>Memory</small>
 
-            <strong>${escapeHtml(item.ram)}</strong>
+            <strong>
+              ${escapeHtml(item.ram || "N/A")}
+            </strong>
           </div>
 
           <div class="compact-spec">
             <span class="compact-icon">SSD</span>
-
             <small>Storage</small>
 
-            <strong>${escapeHtml(item.storage)}</strong>
+            <strong>
+              ${escapeHtml(item.storage || "N/A")}
+            </strong>
           </div>
 
           <div class="compact-spec">
             <span class="compact-icon">GPU</span>
-
             <small>Graphics</small>
 
             <strong>
-              ${escapeHtml(item.graphics || "Integrated")}
+              ${escapeHtml(
+                item.graphics || "Integrated"
+              )}
             </strong>
           </div>
         </div>
@@ -348,7 +471,9 @@ function laptopCard(item) {
             <dt>Display</dt>
 
             <dd>
-              ${escapeHtml(item.display || "Not specified")}
+              ${escapeHtml(
+                item.display || "Not specified"
+              )}
             </dd>
           </div>
 
@@ -356,23 +481,25 @@ function laptopCard(item) {
             <dt>Warranty</dt>
 
             <dd class="warranty-value">
-              1 year warranty
+              ${escapeHtml(
+                item.warranty || "1 year warranty"
+              )}
             </dd>
           </div>
         </dl>
 
-        ${featuresHtml}
+        ${featureHtml}
 
         <div class="card-footer">
           ${buildPricingHtml(item)}
 
           <a
             class="whatsapp-button"
-            href="${createWhatsAppUrl(item)}"
+            href="${createLaptopWhatsAppUrl(item)}"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Enquire on WhatsApp
+            Get Onam offer on WhatsApp
           </a>
         </div>
       </div>
@@ -380,99 +507,83 @@ function laptopCard(item) {
   `;
 }
 
+/* -------------------------------------------------------
+   Accessory cards
+------------------------------------------------------- */
+
 function accessoryCard(item) {
-  const initials = item.name
+  const itemName = item.name || "Accessory";
+
+  const initials = itemName
     .split(" ")
     .filter(Boolean)
-    .map((word) => word[0])
+    .map((word) => word.charAt(0))
     .slice(0, 2)
     .join("")
     .toUpperCase();
 
-  const featureList = Array.isArray(item.features)
+  const features = Array.isArray(item.features)
+    ? item.features
+    : [];
+
+  const featureHtml = features.length
     ? `
       <ul class="accessory-feature-list">
-        ${item.features
+        ${features
           .map(
-            (feature) => `
-              <li>${escapeHtml(feature)}</li>
-            `
+            (feature) =>
+              `<li>${escapeHtml(feature)}</li>`
           )
           .join("")}
       </ul>
     `
     : "";
 
-  const whatsappMessage = encodeURIComponent(
+  const specifications = [
+    ["Works with", item.compatibility],
+    ["Type", item.productType],
+    ["Connection", item.connection],
+    ["Keys", item.keyType],
+    ["Layout", item.layout],
+    ["Colour", item.colour],
     [
-      "Hello HARDNSOFT,",
-      "",
-      `I am interested in the ${item.name}.`,
-      item.brand ? `Brand: ${item.brand}` : "",
-      item.model ? `Model: ${item.model}` : "",
-      item.connection ? `Connection: ${item.connection}` : "",
-      item.layout ? `Layout: ${item.layout}` : "",
-      `Price: ${formatPrice(item.price)}`,
-      item.warranty ? `Warranty: ${item.warranty}` : "",
-      "",
-      "Please confirm current availability."
-    ]
-      .filter(Boolean)
-      .join("\n")
-  );
+      "Backlight",
+      typeof item.backlight === "boolean"
+        ? item.backlight
+          ? "Yes"
+          : "No"
+        : null
+    ],
+    ["Warranty", item.warranty]
+  ].filter(([, value]) => value !== undefined && value !== null && value !== "");
 
-  const mrp = Number(item.mrp);
-  const price = Number(item.price);
+  const specificationsHtml = specifications
+    .map(
+      ([label, value]) => `
+        <div>
+          <dt>${escapeHtml(label)}</dt>
 
-  const hasValidMrp =
-    Number.isFinite(mrp) &&
-    mrp > 0 &&
-    mrp > price;
-
-  const priceHtml = hasValidMrp
-    ? `
-      <div class="accessory-price-box">
-        <div class="accessory-mrp-row">
-          <div class="price-side">
-            <small>Our price</small>
-
-            <div class="price">
-              ${formatPrice(price)}
-            </div>
-          </div>
-
-          <div class="mrp-side">
-            <small>MRP</small>
-            <div class="accessory-mrp">
-              ${formatPrice(mrp)}
-            </div>
-
-            <span class="discount">
-              ${Math.round(((mrp - price) / mrp) * 100)}% OFF
-            </span>
-          </div>
+          <dd class="${
+            label === "Warranty"
+              ? "warranty-value"
+              : ""
+          }">
+            ${escapeHtml(value)}
+          </dd>
         </div>
-
-        <div class="saving">
-          You save ${formatPrice(mrp - price)}
-        </div>
-      </div>
-    `
-    : `
-      <div class="accessory-price-box">
-        <small>Selling price</small>
-
-        <div class="price">
-          ${formatPrice(price)}
-        </div>
-      </div>
-    `;
+      `
+    )
+    .join("");
 
   return `
     <article class="product-card accessory-card">
       <div class="accessory-visual">
         <div>
-          <span>${escapeHtml(item.category)}</span>
+          <span>
+            ${escapeHtml(
+              item.category || "Accessory"
+            )}
+          </span>
 
           ${
             item.brand
@@ -485,124 +596,53 @@ function accessoryCard(item) {
           }
         </div>
 
-        <strong>${escapeHtml(initials)}</strong>
+        <strong>
+          ${escapeHtml(initials || "AC")}
+        </strong>
       </div>
 
       <div class="card-body">
         <div class="stock-label">
-          ${escapeHtml(item.stock)}
+          ${escapeHtml(item.stock || "Available")}
         </div>
 
         <p class="model-label">
-          ${escapeHtml(item.model || item.productType || "Accessory")}
+          ${escapeHtml(
+            item.model ||
+            item.productType ||
+            "Accessory"
+          )}
         </p>
 
-        <h2>${escapeHtml(item.name)}</h2>
+        <h2>
+          ${escapeHtml(itemName)}
+        </h2>
 
-        <dl class="accessory-spec-list">
-          ${
-            item.compatibility
-              ? `
-                <div>
-                  <dt>Works with</dt>
-                  <dd>${escapeHtml(item.compatibility)}</dd>
-                </div>
-              `
-              : ""
-          }
+        ${
+          specificationsHtml
+            ? `
+              <dl class="accessory-spec-list">
+                ${specificationsHtml}
+              </dl>
+            `
+            : ""
+        }
 
-          ${
-            item.productType
-              ? `
-                <div>
-                  <dt>Type</dt>
-                  <dd>${escapeHtml(item.productType)}</dd>
-                </div>
-              `
-              : ""
-          }
-
-          ${
-            item.connection
-              ? `
-                <div>
-                  <dt>Connection</dt>
-                  <dd>${escapeHtml(item.connection)}</dd>
-                </div>
-              `
-              : ""
-          }
-
-          ${
-            item.keyType
-              ? `
-                <div>
-                  <dt>Keys</dt>
-                  <dd>${escapeHtml(item.keyType)}</dd>
-                </div>
-              `
-              : ""
-          }
-
-          ${
-            item.layout
-              ? `
-                <div>
-                  <dt>Layout</dt>
-                  <dd>${escapeHtml(item.layout)}</dd>
-                </div>
-              `
-              : ""
-          }
-
-          ${
-            item.colour
-              ? `
-                <div>
-                  <dt>Colour</dt>
-                  <dd>${escapeHtml(item.colour)}</dd>
-                </div>
-              `
-              : ""
-          }
-
-          ${
-            typeof item.backlight === "boolean"
-              ? `
-                <div>
-                  <dt>Backlight</dt>
-                  <dd>${item.backlight ? "Yes" : "No"}</dd>
-                </div>
-              `
-              : ""
-          }
-
-          ${
-            item.warranty
-              ? `
-                <div>
-                  <dt>Warranty</dt>
-                  <dd class="warranty-value">
-                    ${escapeHtml(item.warranty)}
-                  </dd>
-                </div>
-              `
-              : ""
-          }
-        </dl>
-
-        ${featureList}
+        ${featureHtml}
 
         <div class="card-footer">
-          ${priceHtml}
+          ${buildPricingHtml({
+            ...item,
+            priceLabel: "Onam price"
+          })}
 
           <a
             class="whatsapp-button"
-            href="https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappMessage}"
+            href="${createAccessoryWhatsAppUrl(item)}"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Enquire on WhatsApp
+            Get Onam offer on WhatsApp
           </a>
         </div>
       </div>
@@ -610,60 +650,111 @@ function accessoryCard(item) {
   `;
 }
 
+/* -------------------------------------------------------
+   Rendering
+------------------------------------------------------- */
+
 function renderLaptops() {
-  const items = filteredLaptops();
+  if (!elements.laptopGrid) {
+    return;
+  }
 
-  els.grid.innerHTML = items.map(laptopCard).join("");
-  els.empty.hidden = items.length !== 0;
+  const laptops = getFilteredLaptops();
 
-  els.resultCount.textContent = `${items.length} laptop${
-    items.length === 1 ? "" : "s"
-  } available`;
+  elements.laptopGrid.innerHTML = laptops
+    .map(laptopCard)
+    .join("");
 
-  const activeCount = [
-    els.search,
-    els.brand,
-    els.processor,
-    els.ram,
-    els.storage,
-    els.price
-  ].filter((input) => input.value).length;
+  if (elements.emptyState) {
+    elements.emptyState.hidden = laptops.length !== 0;
+  }
 
-  els.filterBadge.hidden = activeCount === 0;
-  els.filterBadge.textContent = String(activeCount);
+  if (elements.resultCount) {
+    elements.resultCount.textContent =
+      `${laptops.length} laptop${
+        laptops.length === 1 ? "" : "s"
+      } available in Onam Sale`;
+  }
+
+  updateFilterBadge();
 }
 
 function renderAccessories() {
-  els.accessoryGrid.innerHTML = state.accessories
-    .map(accessoryCard)
-    .join("");
+  if (!elements.accessoryGrid) {
+    return;
+  }
 
-  els.accessoryCount.textContent = `${
-    state.accessories.length
-  } accessor${state.accessories.length === 1 ? "y" : "ies"} available`;
+  elements.accessoryGrid.innerHTML =
+    state.accessories
+      .map(accessoryCard)
+      .join("");
+
+  if (elements.accessoryCount) {
+    const count = state.accessories.length;
+
+    elements.accessoryCount.textContent =
+      `${count} accessor${
+        count === 1 ? "y" : "ies"
+      } available`;
+  }
 }
 
-function showTab(name, updateHash = true) {
-  document.querySelectorAll("[data-panel]").forEach((panel) => {
-    const active = panel.dataset.panel === name;
+function updateFilterBadge() {
+  if (!elements.filterBadge) {
+    return;
+  }
 
-    panel.hidden = !active;
-    panel.classList.toggle("active", active);
-  });
+  const activeFilters = [
+    elements.searchInput,
+    elements.brandFilter,
+    elements.processorFilter,
+    elements.ramFilter,
+    elements.storageFilter,
+    elements.priceFilter
+  ].filter((element) => element?.value).length;
 
-  document.querySelectorAll("[data-tab]").forEach((tab) => {
-    const active = tab.dataset.tab === name;
+  elements.filterBadge.hidden =
+    activeFilters === 0;
 
-    tab.classList.toggle("active", active);
+  elements.filterBadge.textContent =
+    String(activeFilters);
+}
 
-    tab.setAttribute(
-      "aria-current",
-      active ? "page" : "false"
-    );
-  });
+/* -------------------------------------------------------
+   Tabs
+------------------------------------------------------- */
+
+function showTab(tabName, updateHash = true) {
+  document
+    .querySelectorAll("[data-panel]")
+    .forEach((panel) => {
+      const isActive =
+        panel.dataset.panel === tabName;
+
+      panel.hidden = !isActive;
+      panel.classList.toggle("active", isActive);
+    });
+
+  document
+    .querySelectorAll("[data-tab]")
+    .forEach((tab) => {
+      const isActive =
+        tab.dataset.tab === tabName;
+
+      tab.classList.toggle("active", isActive);
+
+      tab.setAttribute(
+        "aria-current",
+        isActive ? "page" : "false"
+      );
+    });
 
   if (updateHash) {
-    history.replaceState(null, "", `#${name}`);
+    history.replaceState(
+      null,
+      "",
+      `#${tabName}`
+    );
   }
 
   window.scrollTo({
@@ -672,89 +763,164 @@ function showTab(name, updateHash = true) {
   });
 }
 
-function closeFilterPanel() {
-  els.filterPanel.hidden = true;
+/* -------------------------------------------------------
+   Filter panel
+------------------------------------------------------- */
 
-  els.filterToggle.setAttribute(
+function closeFilterPanel() {
+  if (!elements.filterPanel) {
+    return;
+  }
+
+  elements.filterPanel.hidden = true;
+
+  elements.filterToggle?.setAttribute(
     "aria-expanded",
     "false"
   );
 }
 
-function attachEvents() {
-  document.querySelectorAll("[data-tab]").forEach((tab) => {
-    tab.addEventListener("click", () => {
-      showTab(tab.dataset.tab);
-    });
-  });
-
-  document.querySelectorAll("[data-tab-link]").forEach((link) => {
-    link.addEventListener("click", (event) => {
-      event.preventDefault();
-      showTab(link.dataset.tabLink);
-    });
-  });
-
+function clearAllFilters() {
   [
-    els.search,
-    els.brand,
-    els.processor,
-    els.ram,
-    els.storage,
-    els.price,
-    els.sort
-  ].forEach((input) => {
+    elements.searchInput,
+    elements.brandFilter,
+    elements.processorFilter,
+    elements.ramFilter,
+    elements.storageFilter,
+    elements.priceFilter
+  ].forEach((element) => {
+    if (element) {
+      element.value = "";
+    }
+  });
+
+  if (elements.sortFilter) {
+    elements.sortFilter.value = "newest";
+  }
+
+  renderLaptops();
+}
+
+/* -------------------------------------------------------
+   Onam festive effects
+------------------------------------------------------- */
+
+function startOnamEffects() {
+  document
+    .querySelectorAll(".flower")
+    .forEach((flower, index) => {
+      flower.style.animationDelay =
+        `${index * -0.9}s`;
+    });
+
+  document
+    .querySelectorAll(".onam-petal")
+    .forEach((petal, index) => {
+      petal.style.animationDelay =
+        `${index * -0.45}s`;
+
+      petal.style.animationDuration =
+        `${5 + (index % 4)}s`;
+    });
+
+  const saleButton =
+    document.querySelector(".onam-sale-button");
+
+  if (saleButton) {
+    saleButton.addEventListener("click", () => {
+      byId("catalog")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    });
+  }
+}
+
+/* -------------------------------------------------------
+   Events
+------------------------------------------------------- */
+
+function attachEvents() {
+  document
+    .querySelectorAll("[data-tab]")
+    .forEach((tab) => {
+      tab.addEventListener("click", () => {
+        showTab(tab.dataset.tab);
+      });
+    });
+
+  document
+    .querySelectorAll("[data-tab-link]")
+    .forEach((link) => {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        showTab(link.dataset.tabLink);
+      });
+    });
+
+  const filterElements = [
+    elements.searchInput,
+    elements.brandFilter,
+    elements.processorFilter,
+    elements.ramFilter,
+    elements.storageFilter,
+    elements.priceFilter,
+    elements.sortFilter
+  ].filter(Boolean);
+
+  filterElements.forEach((element) => {
     const eventName =
-      input.tagName === "INPUT"
+      element.tagName === "INPUT"
         ? "input"
         : "change";
 
-    input.addEventListener(
+    element.addEventListener(
       eventName,
       renderLaptops
     );
   });
 
-  els.filterToggle.addEventListener("click", () => {
-    const willOpen = els.filterPanel.hidden;
+  elements.filterToggle?.addEventListener(
+    "click",
+    () => {
+      if (!elements.filterPanel) {
+        return;
+      }
 
-    els.filterPanel.hidden = !willOpen;
+      const shouldOpen =
+        elements.filterPanel.hidden;
 
-    els.filterToggle.setAttribute(
-      "aria-expanded",
-      String(willOpen)
-    );
-  });
+      elements.filterPanel.hidden =
+        !shouldOpen;
 
-  els.clear.addEventListener("click", () => {
-    [
-      els.search,
-      els.brand,
-      els.processor,
-      els.ram,
-      els.storage,
-      els.price
-    ].forEach((input) => {
-      input.value = "";
-    });
+      elements.filterToggle.setAttribute(
+        "aria-expanded",
+        String(shouldOpen)
+      );
+    }
+  );
 
-    els.sort.value = "newest";
+  elements.clearFilters?.addEventListener(
+    "click",
+    clearAllFilters
+  );
 
-    renderLaptops();
-  });
-
-  els.browseLaptops.addEventListener("click", () => {
-    byId("catalog").scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-  });
+  elements.browseLaptops?.addEventListener(
+    "click",
+    () => {
+      byId("catalog")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+  );
 
   document.addEventListener("click", (event) => {
     if (
-      !els.filterPanel.hidden &&
-      !els.filterPanel.contains(event.target) &&
-      !els.filterToggle.contains(event.target)
+      elements.filterPanel &&
+      !elements.filterPanel.hidden &&
+      !elements.filterPanel.contains(event.target) &&
+      !elements.filterToggle?.contains(event.target)
     ) {
       closeFilterPanel();
     }
@@ -766,6 +932,10 @@ function attachEvents() {
     }
   });
 }
+
+/* -------------------------------------------------------
+   JSON loading
+------------------------------------------------------- */
 
 async function loadJson(url) {
   const response = await fetch(url, {
@@ -781,17 +951,58 @@ async function loadJson(url) {
   return response.json();
 }
 
-async function init() {
+function showLoadError(error) {
+  console.error(error);
+
+  const message =
+    error instanceof Error
+      ? error.message
+      : "Inventory could not be loaded.";
+
+  if (elements.resultCount) {
+    elements.resultCount.textContent = message;
+  }
+
+  if (elements.accessoryCount) {
+    elements.accessoryCount.textContent =
+      message;
+  }
+
+  if (elements.laptopGrid) {
+    elements.laptopGrid.innerHTML = `
+      <div class="empty-state">
+        <h2>Unable to load inventory</h2>
+
+        <p>
+          Check that laptops.json and
+          accessories.json are in the same
+          folder as index.html.
+        </p>
+      </div>
+    `;
+  }
+}
+
+/* -------------------------------------------------------
+   Initialisation
+------------------------------------------------------- */
+
+async function initialiseWebsite() {
   attachEvents();
+  startOnamEffects();
 
-  const requestedTab = location.hash.slice(1);
+  const requestedTab =
+    location.hash.slice(1);
 
-  const initialTab = [
+  const allowedTabs = [
     "laptops",
     "accessories"
-  ].includes(requestedTab)
-    ? requestedTab
-    : "laptops";
+  ];
+
+  const initialTab =
+    allowedTabs.includes(requestedTab)
+      ? requestedTab
+      : "laptops";
 
   showTab(initialTab, false);
 
@@ -802,12 +1013,15 @@ async function init() {
         loadJson("accessories.json")
       ]);
 
-    if (
-      !Array.isArray(laptops) ||
-      !Array.isArray(accessories)
-    ) {
+    if (!Array.isArray(laptops)) {
       throw new Error(
-        "Inventory JSON must contain an array."
+        "laptops.json must contain an array."
+      );
+    }
+
+    if (!Array.isArray(accessories)) {
+      throw new Error(
+        "accessories.json must contain an array."
       );
     }
 
@@ -815,14 +1029,16 @@ async function init() {
     state.accessories = accessories;
 
     populateSelect(
-      els.brand,
+      elements.brandFilter,
       unique(
-        state.laptops.map((item) => item.brand)
+        state.laptops.map(
+          (item) => item.brand
+        )
       )
     );
 
     populateSelect(
-      els.processor,
+      elements.processorFilter,
       unique(
         state.laptops.map(
           (item) => item.processorFamily
@@ -831,46 +1047,35 @@ async function init() {
     );
 
     populateSelect(
-      els.ram,
+      elements.ramFilter,
       unique(
-        state.laptops.map((item) => item.ram)
+        state.laptops.map(
+          (item) => item.ram
+        )
       )
     );
 
     populateSelect(
-      els.storage,
+      elements.storageFilter,
       unique(
-        state.laptops.map((item) => item.storage)
+        state.laptops.map(
+          (item) => item.storage
+        )
       )
     );
 
     renderLaptops();
     renderAccessories();
   } catch (error) {
-    console.error(error);
-
-    const message =
-      error instanceof Error
-        ? error.message
-        : "Inventory could not be loaded.";
-
-    els.resultCount.textContent = message;
-    els.accessoryCount.textContent = message;
-
-    els.grid.innerHTML = `
-      <div class="empty-state">
-        <h2>Unable to load inventory</h2>
-
-        <p>
-          Check that laptops.json and accessories.json
-          are in the same folder as index.html.
-        </p>
-      </div>
-    `;
+    showLoadError(error);
   }
 }
 
-byId("year").textContent =
-  new Date().getFullYear();
+const yearElement = byId("year");
 
-init();
+if (yearElement) {
+  yearElement.textContent =
+    new Date().getFullYear();
+}
+
+initialiseWebsite();
