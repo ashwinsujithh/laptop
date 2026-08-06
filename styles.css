@@ -21,6 +21,7 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
@@ -30,6 +31,13 @@ body {
   color: var(--text);
   background: var(--bg);
   line-height: 1.5;
+  overflow-x: hidden;
+}
+
+body *,
+body *::before,
+body *::after {
+  max-width: 100%;
 }
 
 button,
@@ -56,6 +64,19 @@ img {
 .container {
   width: min(1360px, calc(100% - 32px));
   margin: 0 auto;
+}
+
+.hero,
+.hero-content,
+.onam-showcase,
+.catalog-toolbar,
+.filter-wrap,
+.filter-panel,
+.product-card,
+.product-grid,
+.brand-block,
+nav {
+  min-width: 0;
 }
 
 /* Header */
@@ -167,6 +188,8 @@ nav {
 /* Hero */
 
 .hero {
+  position: relative;
+  isolation: isolate;
   margin-bottom: 36px;
   padding: 34px 38px;
   display: grid;
@@ -182,6 +205,12 @@ nav {
   box-shadow: var(--shadow);
 }
 
+.hero-content,
+.onam-showcase {
+  max-width: 100%;
+  min-width: 0;
+}
+
 .hero .eyebrow {
   color: #93c5fd;
 }
@@ -195,10 +224,13 @@ nav {
 }
 
 .hero-description {
-  max-width: 640px;
+  width: 100%;
+  max-width: 100%;
   margin: 14px 0 0;
   color: #dbeafe;
   font-size: 0.95rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
 }
 
 .hero-actions {
@@ -206,6 +238,17 @@ nav {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+.primary-btn,
+.secondary-link,
+.secondary-btn,
+.filter-toggle,
+.whatsapp-button,
+.nav-tab,
+.brand-link,
+.whatsapp-link {
+  overflow-wrap: anywhere;
 }
 
 .primary-btn,
@@ -310,6 +353,7 @@ nav {
   right: 0;
   z-index: 30;
   width: min(640px, calc(100vw - 32px));
+  max-width: 100%;
   padding: 17px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -910,21 +954,55 @@ footer {
     width: min(100% - 24px, 1360px);
   }
 
+  .site-header {
+    position: static;
+  }
+
   .nav-wrap {
-    min-height: 62px;
+    min-height: auto;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 12px 0;
+  }
+
+  .brand-block {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .brand {
+    font-size: 1.22rem;
+  }
+
+  .brand-link {
+    width: 100%;
+    padding: 8px 10px;
+    text-align: center;
+    justify-content: center;
   }
 
   nav {
-    gap: 2px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    width: 100%;
   }
 
-  .nav-tab {
-    padding: 8px 7px;
-    font-size: 0.76rem;
+  .nav-tab,
+  .whatsapp-link {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    text-align: center;
+    justify-content: center;
   }
 
   .whatsapp-link {
-    display: none;
+    margin-left: 0;
+    display: inline-flex;
   }
 
   .page-shell {
@@ -932,8 +1010,27 @@ footer {
   }
 
   .hero {
-    padding: 28px 22px;
-    border-radius: 17px;
+    grid-template-columns: minmax(0, 1fr);
+    padding: 22px 18px;
+    border-radius: 16px;
+    gap: 18px;
+  }
+
+  .hero h1 {
+    max-width: 100%;
+    font-size: clamp(2.4rem, 8.4vw, 2.9rem);
+    line-height: 1.04;
+  }
+
+  .hero-content,
+  .onam-showcase {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .hero-description {
+    font-size: 0.95rem;
+    line-height: 1.55;
   }
 
   .hero-stats {
@@ -941,6 +1038,7 @@ footer {
   }
 
   .catalog-toolbar {
+    flex-direction: column;
     align-items: flex-start;
   }
 
@@ -984,7 +1082,29 @@ footer {
   .primary-btn,
   .secondary-link {
     width: 100%;
+    min-height: 44px;
     justify-content: center;
+  }
+
+  .onam-glow,
+  .flower,
+  .pookalam,
+  .festive-note {
+    display: none;
+  }
+
+  .onam-showcase {
+    display: grid;
+    justify-items: center;
+    gap: 12px;
+  }
+
+  .sale-badge {
+    position: relative;
+    z-index: 2;
+    width: min(175px, 62vw);
+    aspect-ratio: 1;
+    margin: 0 auto;
   }
 
   .card-visual {
@@ -1231,11 +1351,34 @@ footer {
 @media (max-width: 700px) {
   .festival-topbar-inner { justify-content: space-between; gap: 8px; font-size: .62rem; }
   .festival-topbar-inner a { display: none; }
-  .onam-hero { padding: 30px 22px; }
-  .onam-hero h1 { font-size: clamp(2.6rem, 14vw, 4.4rem); }
+  .onam-hero {
+    padding: 22px 18px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .onam-hero h1 {
+    max-width: 100%;
+    font-size: clamp(2.2rem, 8vw, 2.9rem);
+    line-height: 1.06;
+  }
+  .onam-hero .hero-description {
+    width: 100%;
+    max-width: 100%;
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
   .offer-strip { grid-template-columns: 1fr; }
-  .onam-showcase { min-height: 280px; }
-  .sale-badge { width: 92px; height: 92px; right: 0; }
+  .onam-showcase {
+    min-height: 280px;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+  .sale-badge {
+    width: 92px;
+    height: 92px;
+    right: 0;
+    top: 8px;
+  }
   .pookalam { width: 190px; height: 190px; }
   .festive-note { display: none; }
 }
