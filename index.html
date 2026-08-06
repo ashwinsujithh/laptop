@@ -2,65 +2,300 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Browse available refurbished laptops and computer accessories from HARDNSOFT." />
-  <title>HARDNSOFT | Laptops, Accessories & Service</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <meta
+    name="description"
+    content="Browse quality laptops, gaming systems, business laptops and computer accessories from HARDNSOFT."
+  />
+
+  <title>HARDNSOFT | Laptops and Accessories</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
   <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
   <header class="site-header">
     <div class="container nav-wrap">
-      <a class="brand" href="#laptops" data-tab-link="laptops">HARDN<span>SOFT</span></a>
+      <a
+        class="brand"
+        href="#laptops"
+        data-tab-link="laptops"
+        aria-label="HARDNSOFT home"
+      >
+        HARDN<span>SOFT</span>
+      </a>
+
       <nav aria-label="Primary navigation">
-        <button class="nav-tab active" type="button" data-tab="laptops">Laptops</button>
-        <button class="nav-tab" type="button" data-tab="accessories">Accessories</button>
-        <a class="whatsapp-link" href="https://wa.me/917025402409" target="_blank" rel="noopener">WhatsApp</a>
+        <button
+          class="nav-tab active"
+          type="button"
+          data-tab="laptops"
+        >
+          Laptops
+        </button>
+
+        <button
+          class="nav-tab"
+          type="button"
+          data-tab="accessories"
+        >
+          Accessories
+        </button>
+
+        <a
+          class="whatsapp-link"
+          href="https://wa.me/917025402409"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          WhatsApp
+        </a>
       </nav>
     </div>
   </header>
 
   <main class="container page-shell">
-    <section class="tab-panel active" id="laptops" data-panel="laptops">
-      <div class="catalog-toolbar">
+    <section
+      class="tab-panel active"
+      id="laptops"
+      data-panel="laptops"
+    >
+      <div class="hero">
+        <div class="hero-content">
+          <p class="eyebrow">HARDNSOFT inventory</p>
+
+          <h1>Powerful laptops at better prices.</h1>
+
+          <p class="hero-description">
+            Compare processor, RAM, storage, graphics, MRP and our selling
+            price. Every laptop includes a one-year warranty.
+          </p>
+
+          <div class="hero-actions">
+            <button
+              id="browseLaptops"
+              class="primary-btn"
+              type="button"
+            >
+              Browse laptops
+            </button>
+
+            <a
+              class="secondary-link"
+              href="https://wa.me/917025402409?text=Hello%20HARDNSOFT%2C%20I%20would%20like%20to%20know%20about%20your%20available%20laptops."
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Ask on WhatsApp
+            </a>
+          </div>
+        </div>
+
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <strong>1 Year</strong>
+            <span>Warranty</span>
+          </div>
+
+          <div class="hero-stat">
+            <strong>Verified</strong>
+            <span>Specifications</span>
+          </div>
+
+          <div class="hero-stat">
+            <strong>Direct</strong>
+            <span>WhatsApp support</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="catalog-toolbar" id="catalog">
         <div>
           <p class="eyebrow">Current stock</p>
-          <h1>Available laptops</h1>
-          <p id="resultCount" class="result-count" aria-live="polite">Loading stock…</p>
+
+          <h2 class="section-title">Available laptops</h2>
+
+          <p
+            id="resultCount"
+            class="result-count"
+            aria-live="polite"
+          >
+            Loading laptops…
+          </p>
         </div>
+
         <div class="filter-wrap">
-          <button id="filterToggle" class="filter-toggle" type="button" aria-expanded="false" aria-controls="filterPanel">Filters <span id="filterBadge" hidden>0</span></button>
-          <div id="filterPanel" class="filter-panel" hidden>
-            <label class="search-field"><span>Search</span><input id="searchInput" type="search" placeholder="Brand, model or specification" /></label>
+          <button
+            id="filterToggle"
+            class="filter-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="filterPanel"
+          >
+            Filters
+            <span id="filterBadge" hidden>0</span>
+          </button>
+
+          <div
+            id="filterPanel"
+            class="filter-panel"
+            hidden
+          >
+            <label class="search-field">
+              <span>Search</span>
+
+              <input
+                id="searchInput"
+                type="search"
+                placeholder="Brand, model or specification"
+                autocomplete="off"
+              />
+            </label>
+
             <div class="filter-grid">
-              <label><span>Brand</span><select id="brandFilter"><option value="">All brands</option></select></label>
-              <label><span>Condition</span><select id="conditionFilter"><option value="">All conditions</option></select></label>
-              <label><span>Processor</span><select id="processorFilter"><option value="">All processors</option></select></label>
-              <label><span>RAM</span><select id="ramFilter"><option value="">All RAM</option></select></label>
-              <label><span>Storage</span><select id="storageFilter"><option value="">All storage</option></select></label>
-              <label><span>Maximum price</span><select id="priceFilter"><option value="">Any price</option><option value="25000">Up to ₹25,000</option><option value="40000">Up to ₹40,000</option><option value="60000">Up to ₹60,000</option><option value="80000">Up to ₹80,000</option><option value="110000">Up to ₹1,10,000</option><option value="130000">Up to ₹1,30,000</option></select></label>
+              <label>
+                <span>Brand</span>
+
+                <select id="brandFilter">
+                  <option value="">All brands</option>
+                </select>
+              </label>
+
+              <label>
+                <span>Processor</span>
+
+                <select id="processorFilter">
+                  <option value="">All processors</option>
+                </select>
+              </label>
+
+              <label>
+                <span>RAM</span>
+
+                <select id="ramFilter">
+                  <option value="">All RAM</option>
+                </select>
+              </label>
+
+              <label>
+                <span>Storage</span>
+
+                <select id="storageFilter">
+                  <option value="">All storage</option>
+                </select>
+              </label>
+
+              <label>
+                <span>Our price up to</span>
+
+                <select id="priceFilter">
+                  <option value="">Any price</option>
+                  <option value="25000">Up to ₹25,000</option>
+                  <option value="40000">Up to ₹40,000</option>
+                  <option value="60000">Up to ₹60,000</option>
+                  <option value="80000">Up to ₹80,000</option>
+                  <option value="110000">Up to ₹1,10,000</option>
+                  <option value="130000">Up to ₹1,30,000</option>
+                </select>
+              </label>
             </div>
+
             <div class="filter-actions">
-              <label><span>Sort by</span><select id="sortFilter"><option value="newest">Newest added</option><option value="price-asc">Price: low to high</option><option value="price-desc">Price: high to low</option><option value="brand">Brand A–Z</option></select></label>
-              <button id="clearFilters" class="secondary-btn" type="button">Clear</button>
+              <label>
+                <span>Sort by</span>
+
+                <select id="sortFilter">
+                  <option value="newest">Newest added</option>
+                  <option value="price-asc">Price: low to high</option>
+                  <option value="price-desc">Price: high to low</option>
+                  <option value="brand">Brand A–Z</option>
+                </select>
+              </label>
+
+              <button
+                id="clearFilters"
+                class="secondary-btn"
+                type="button"
+              >
+                Clear filters
+              </button>
             </div>
           </div>
         </div>
       </div>
-      <div id="laptopGrid" class="product-grid" aria-live="polite"></div>
-      <div id="emptyState" class="empty-state" hidden><h2>No laptops found</h2><p>Try removing one or more filters.</p></div>
+
+      <div
+        id="laptopGrid"
+        class="product-grid"
+        aria-live="polite"
+      ></div>
+
+      <div
+        id="emptyState"
+        class="empty-state"
+        hidden
+      >
+        <h2>No laptops found</h2>
+        <p>Try removing one or more filters.</p>
+      </div>
     </section>
 
-    <section class="tab-panel" id="accessories" data-panel="accessories" hidden>
-      <div class="catalog-toolbar"><div><p class="eyebrow">Hardware & essentials</p><h1>Accessories</h1><p id="accessoryCount" class="result-count">Loading accessories…</p></div></div>
-      <div id="accessoryGrid" class="product-grid accessory-grid" aria-live="polite"></div>
-    </section>
+    <section
+      class="tab-panel"
+      id="accessories"
+      data-panel="accessories"
+      hidden
+    >
+      <div class="catalog-toolbar">
+        <div>
+          <p class="eyebrow">Hardware and essentials</p>
 
+          <h1 class="section-title">Accessories</h1>
+
+          <p
+            id="accessoryCount"
+            class="result-count"
+          >
+            Loading accessories…
+          </p>
+        </div>
+      </div>
+
+      <div
+        id="accessoryGrid"
+        class="product-grid accessory-grid"
+        aria-live="polite"
+      ></div>
+    </section>
   </main>
 
-  <footer><div class="container footer-wrap"><a class="brand footer-brand" href="#laptops" data-tab-link="laptops">HARDN<span>SOFT</span></a><p>© <span id="year"></span> HARDNSOFT</p></div></footer>
+  <footer>
+    <div class="container footer-wrap">
+      <a
+        class="brand footer-brand"
+        href="#laptops"
+        data-tab-link="laptops"
+      >
+        HARDN<span>SOFT</span>
+      </a>
+
+      <p>© <span id="year"></span> HARDNSOFT</p>
+    </div>
+  </footer>
+
   <script src="app.js"></script>
 </body>
 </html>

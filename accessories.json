@@ -1,8 +1,28 @@
 [
-  {"id":"wireless-mouse","name":"Wireless Mouse","category":"Input device","compatibility":"Windows, macOS and Linux","condition":"New","price":799,"stock":"In stock"},
-  {"id":"laptop-backpack-15","name":"15.6-inch Laptop Backpack","category":"Bags & protection","compatibility":"Laptops up to 15.6 inches","condition":"New","price":1299,"stock":"In stock"},
-  {"id":"usb-c-hub-7in1","name":"7-in-1 USB-C Hub","category":"Connectivity","compatibility":"USB-C laptops","condition":"New","price":2499,"stock":"In stock"},
-  {"id":"ddr4-8gb-sodimm","name":"8GB DDR4 SODIMM RAM","category":"Memory upgrade","compatibility":"Compatible DDR4 laptops","condition":"New","price":1899,"stock":"Check availability"},
-  {"id":"nvme-ssd-512","name":"512GB NVMe SSD","category":"Storage upgrade","compatibility":"M.2 NVMe supported laptops","condition":"New","price":2999,"stock":"In stock"},
-  {"id":"universal-laptop-stand","name":"Adjustable Laptop Stand","category":"Desk accessory","compatibility":"11–17 inch laptops","condition":"New","price":999,"stock":"In stock"}
+  {
+  "id": "dell-kb216-wired-keyboard",
+  "name": "Dell KB216 Essential Wired Keyboard",
+  "brand": "Dell",
+  "model": "KB216",
+  "category": "Input device",
+  "productType": "Full-size wired keyboard",
+  "compatibility": "Desktop and laptop computers with USB",
+  "connection": "USB wired",
+  "keyType": "Quiet chiclet plunger keys",
+  "layout": "Full-size English layout with numeric keypad",
+  "features": [
+    "Multimedia shortcut keys",
+    "Spill-resistant design",
+    "Plug and play",
+    "Three indicator lights",
+    "Adjustable keyboard feet"
+  ],
+  "colour": "Black",
+  "backlight": false,
+  "warranty": "1 year",
+  "mrp": 999,
+  "price": 599,
+  "stock": "In stock",
+  "addedAt": "2026-08-06T12:01:00+05:30"
+}
 ]
