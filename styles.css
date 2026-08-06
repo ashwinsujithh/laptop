@@ -1236,6 +1236,7 @@ footer {
   gap: 18px;
   font-size: 0.72rem;
   text-align: center;
+  flex-wrap: wrap;
 }
 
 .festival-topbar-inner span,
@@ -1349,7 +1350,12 @@ footer {
 }
 
 @media (max-width: 700px) {
-  .festival-topbar-inner { justify-content: space-between; gap: 8px; font-size: .62rem; }
+  .festival-topbar-inner {
+    justify-content: center;
+    gap: 8px;
+    font-size: .62rem;
+    padding: 8px 0;
+  }
   .festival-topbar-inner a { display: none; }
   .onam-hero {
     padding: 22px 18px;
