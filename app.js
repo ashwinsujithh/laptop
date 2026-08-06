@@ -193,25 +193,27 @@ function buildPricingHtml(item) {
   return `
     <div class="price-panel">
       <div class="price-main-row">
-        <div>
+        <div class="price-side">
+          <div class="our-price-label">
+            ${escapeHtml(item.priceLabel || "Our price")}
+          </div>
+
+          <div class="price">
+            ${formatPrice(price)}
+          </div>
+        </div>
+
+        <div class="mrp-side">
           <div class="mrp-label">MRP</div>
 
           <div class="mrp">
             ${formatPrice(mrp)}
           </div>
+
+          <span class="discount">
+            ${discount}% OFF
+          </span>
         </div>
-
-        <span class="discount">
-          ${discount}% OFF
-        </span>
-      </div>
-
-      <div class="our-price-label">
-        ${escapeHtml(item.priceLabel || "Our price")}
-      </div>
-
-      <div class="price">
-        ${formatPrice(price)}
       </div>
 
       <div class="saving">
@@ -431,22 +433,24 @@ function accessoryCard(item) {
     ? `
       <div class="accessory-price-box">
         <div class="accessory-mrp-row">
-          <div>
+          <div class="price-side">
+            <small>Our price</small>
+
+            <div class="price">
+              ${formatPrice(price)}
+            </div>
+          </div>
+
+          <div class="mrp-side">
             <small>MRP</small>
             <div class="accessory-mrp">
               ${formatPrice(mrp)}
             </div>
+
+            <span class="discount">
+              ${Math.round(((mrp - price) / mrp) * 100)}% OFF
+            </span>
           </div>
-
-          <span class="discount">
-            ${Math.round(((mrp - price) / mrp) * 100)}% OFF
-          </span>
-        </div>
-
-        <small>Our price</small>
-
-        <div class="price">
-          ${formatPrice(price)}
         </div>
 
         <div class="saving">

@@ -77,6 +77,13 @@ img {
   gap: 20px;
 }
 
+.brand-block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 .brand {
   font-size: 1.35rem;
   font-weight: 800;
@@ -85,28 +92,43 @@ img {
 
 .brand span,
 .eyebrow {
-  color: var(--brand);
+  color: #0f172a;
 }
 
 nav {
   display: flex;
   align-items: center;
   gap: 5px;
+  flex-wrap: wrap;
 }
 
 .nav-tab {
   padding: 9px 12px;
   border: 0;
-  border-radius: 9px;
+  border-radius: 999px;
   background: transparent;
   font-weight: 700;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .nav-tab:hover,
 .nav-tab.active {
-  color: var(--brand-dark);
-  background: var(--brand-soft);
+  color: #0f172a;
+  background: #e2e8f0;
+}
+
+.brand-link {
+  padding: 8px 12px;
+  border-radius: 999px;
+  color: #0f172a;
+  background: #f8fafc;
+  font-weight: 800;
+  border: 1px solid #dbe4ee;
+}
+
+.brand-link:hover {
+  background: #eef2f7;
 }
 
 .whatsapp-link {
@@ -686,7 +708,20 @@ textarea:focus {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 7px;
+  gap: 10px;
+}
+
+.price-side,
+.mrp-side {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.mrp-side {
+  align-items: flex-end;
+  text-align: right;
 }
 
 .mrp-label,
@@ -710,10 +745,6 @@ textarea:focus {
   background: var(--success-soft);
   font-size: 0.52rem;
   font-weight: 800;
-}
-
-.our-price-label {
-  margin-top: 3px;
 }
 
 .price {

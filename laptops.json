@@ -320,5 +320,27 @@
     "price": 64500,
     "priceLabel": "Our price",
     "addedAt": "2026-08-05T21:50:00+05:30"
+  },
+  {
+    "id": "hp-zbook-fury-15-g7",
+    "brand": "HP",
+    "model": "ZBook Fury 15 G7",
+    "availabilityLabel": "Workstation",
+    "processor": "Intel Core i7 10th Gen",
+    "processorFamily": "Intel Core i7",
+    "processorImage": "https://commons.wikimedia.org/wiki/Special:FilePath/Intel_Core_i7_2020_logo.svg",
+    "ram": "16GB",
+    "storage": "512GB SSD",
+    "graphics": "NVIDIA 4GB",
+    "display": null,
+    "operatingSystem": null,
+    "features": [
+      "Webcam",
+      "Mobile workstation"
+    ],
+    "mrp": null,
+    "price": 71000,
+    "priceLabel": "Our price",
+    "addedAt": "2026-08-06T11:31:00+05:30"
   }
 ]

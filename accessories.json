@@ -1,28 +1,34 @@
 [
   {
-  "id": "dell-kb216-wired-keyboard",
-  "name": "Dell KB216 Essential Wired Keyboard",
-  "brand": "Dell",
-  "model": "KB216",
-  "category": "Input device",
-  "productType": "Full-size wired keyboard",
-  "compatibility": "Desktop and laptop computers with USB",
-  "connection": "USB wired",
-  "keyType": "Quiet chiclet plunger keys",
-  "layout": "Full-size English layout with numeric keypad",
-  "features": [
-    "Multimedia shortcut keys",
-    "Spill-resistant design",
-    "Plug and play",
-    "Three indicator lights",
-    "Adjustable keyboard feet"
-  ],
-  "colour": "Black",
-  "backlight": false,
-  "warranty": "1 year",
-  "mrp": 999,
-  "price": 599,
-  "stock": "In stock",
-  "addedAt": "2026-08-06T12:01:00+05:30"
-}
+    "id": "dell-kb216-ms116-combo",
+    "name": "Dell KB216 Keyboard (र1799) + MS116 Mouse (र999) Combo",
+    "brand": "Dell",
+    "model": "KB216 + MS116",
+    "category": "Input Device",
+    "productType": "Keyboard & Mouse Combo",
+    "compatibility": "Desktop and Laptop (USB)",
+    "connection": "USB Wired",
+    "keyboard": {
+      "layout": "Full-size with Numeric Keypad",
+      "keyType": "Quiet Chiclet Keys"
+    },
+    "mouse": {
+      "model": "MS116",
+      "sensor": "Optical",
+      "dpi": "1000 DPI"
+    },
+    "features": [
+      "Plug and Play",
+      "Quiet typing",
+      "Dedicated number pad",
+      "1000 DPI optical mouse",
+      "Reliable USB connectivity"
+    ],
+    "colour": "Black",
+    "warranty": "3 Year",
+    "mrp": 2798,
+    "price": 1500,
+    "stock": "In stock",
+    "addedAt": "2026-08-06T12:31:00+05:30"
+  }
 ]
