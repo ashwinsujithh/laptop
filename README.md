@@ -1,6 +1,6 @@
 # HARDNSOFT Laptop Store
 
-A lightweight single-page storefront for HARDNSOFT's Onam Dhamakka Sale 2026. It presents laptop and accessory inventory from local JSON files and sends customer enquiries to WhatsApp. No application backend or database is required.
+A React single-page storefront for HARDNSOFT's Onam Dhamakka Sale 2026. It presents laptop and accessory inventory from local JSON files and sends customer enquiries to WhatsApp. Vite handles local development and production builds; no application backend or database is required.
 
 ## Features
 
@@ -13,13 +13,14 @@ A lightweight single-page storefront for HARDNSOFT's Onam Dhamakka Sale 2026. It
 
 ## Project structure
 
-- `index.html` - page structure and accessible catalog tabs
+- `index.html` - Vite entry document and React mount point
+- `src/App.jsx` - application shell, catalog state, and page sections
+- `src/components/` - filters and product-card components
+- `src/catalog.js` - filtering, sorting, pricing, and WhatsApp helpers
+- `src/inventory.js` - shared inventory validation and loading
 - `styles.css` - responsive layout and visual design
-- `app.js` - rendering, filtering, interactions, and data loading
-- `inventory.js` - shared inventory validation and normalization
-- `laptops.json` - laptop inventory
-- `accessories.json` - accessory inventory
-- `server.js` - dependency-free local static server
+- `public/laptops.json` - laptop inventory
+- `public/accessories.json` - accessory inventory
 - `tests/` - Node test suite for inventory behavior
 
 ## Requirements
@@ -29,15 +30,16 @@ A lightweight single-page storefront for HARDNSOFT's Onam Dhamakka Sale 2026. It
 ## Run locally
 
 ```powershell
+npm install
 npm start
 ```
 
-Open `http://127.0.0.1:8000`. A local server is required because browsers do not reliably allow pages opened with `file://` to fetch JSON files.
+Open the local URL printed by Vite, normally `http://localhost:5173`.
 
-To use another port:
+To expose the development server on your network:
 
 ```powershell
-$env:PORT=8080; npm start
+npm start -- --host
 ```
 
 ## Test
@@ -50,7 +52,7 @@ The same suite runs in GitHub Actions before deployment.
 
 ## Inventory maintenance
 
-Edit `laptops.json` or `accessories.json` directly. Every item must have:
+Edit `public/laptops.json` or `public/accessories.json` directly. Every item must have:
 
 - A unique, non-empty `id`
 - A positive numeric `price`
@@ -64,7 +66,7 @@ After changing inventory, run `npm test`. Invalid data blocks the GitHub Pages d
 
 ## Deployment
 
-Pushes to `main` run the tests and deploy the repository to GitHub Pages after they pass. The catalog has no server-side save feature; inventory changes must be committed to the JSON files.
+Pushes to `main` install locked dependencies, run tests, build the React application, and deploy `dist/` to GitHub Pages after all checks pass. The catalog has no server-side save feature; inventory changes must be committed to the JSON files.
 
 ## Contact
 
