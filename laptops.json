@@ -20,6 +20,7 @@
     "mrp": 157945,
     "price": 103000,
     "priceLabel": "Our price",
+    "warranty": "1 Year",
     "addedAt": "2026-08-05T22:55:00+05:30"
   },
   {
@@ -43,6 +44,7 @@
     "mrp": null,
     "price": 61000,
     "priceLabel": "Our price",
+    "warranty": "1 Year",
     "addedAt": "2026-08-05T22:50:00+05:30"
   },
   {
@@ -66,6 +68,7 @@
     "mrp": null,
     "price": 20000,
     "priceLabel": "Our price",
+    "warranty": "1 Year",
     "addedAt": "2026-08-05T22:45:00+05:30"
   },
   {
@@ -89,6 +92,7 @@
     "mrp": null,
     "price": 24000,
     "priceLabel": "Starting price",
+    "warranty": "1 Year",
     "addedAt": "2026-08-05T22:40:00+05:30"
   },
   {
@@ -112,6 +116,7 @@
     "mrp": null,
     "price": 76000,
     "priceLabel": "Our price",
+    "warranty": "1 Year",
     "addedAt": "2026-08-05T22:35:00+05:30"
   },
   {
@@ -135,30 +140,8 @@
     "mrp": null,
     "price": 69500,
     "priceLabel": "Our price",
+    "warranty": "1 Year",
     "addedAt": "2026-08-05T22:30:00+05:30"
-  },
-  {
-    "id": "hp-victus-15-fa1128tx-68500",
-    "brand": "HP",
-    "model": "Victus 15-FA1128TX",
-    "availabilityLabel": "Gaming choice",
-    "processor": "Intel Core i5 13th Gen",
-    "processorFamily": "Intel Core i5",
-    "processorImage": "https://commons.wikimedia.org/wiki/Special:FilePath/Intel_Core_i5_2020_logo.svg",
-    "ram": "16GB",
-    "storage": "512GB SSD",
-    "graphics": "RTX 2050 4GB",
-    "display": "15.6-inch",
-    "operatingSystem": "Windows 10",
-    "features": [
-      "Gaming laptop",
-      "Dedicated graphics",
-      "13th generation processor"
-    ],
-    "mrp": 97990,
-    "price": 68500,
-    "priceLabel": "Our price",
-    "addedAt": "2026-08-05T22:25:00+05:30"
   },
   {
     "id": "hp-pavilion-gaming-15-ec1512ax",
@@ -181,6 +164,7 @@
     "mrp": null,
     "price": 59000,
     "priceLabel": "Our price",
+    "warranty": "1 Year",
     "addedAt": "2026-08-05T22:20:00+05:30"
   },
   {
@@ -204,6 +188,7 @@
     "mrp": 83039,
     "price": 56500,
     "priceLabel": "Our price",
+    "warranty": "1 Year",
     "addedAt": "2026-08-05T22:15:00+05:30"
   },
   {
@@ -227,6 +212,7 @@
     "mrp": 97990,
     "price": 66000,
     "priceLabel": "Our price",
+    "warranty": "1 Year",
     "addedAt": "2026-08-05T22:10:00+05:30"
   },
   {
@@ -250,6 +236,7 @@
     "mrp": null,
     "price": 29000,
     "priceLabel": "Our price",
+    "warranty": "1 Year",
     "addedAt": "2026-08-05T22:05:00+05:30"
   },
   {
@@ -273,6 +260,7 @@
     "mrp": null,
     "price": 30000,
     "priceLabel": "Our price",
+    "warranty": "1 Year",
     "addedAt": "2026-08-05T22:00:00+05:30"
   },
   {
@@ -296,6 +284,7 @@
     "mrp": 159990,
     "price": 119314,
     "priceLabel": "Our price",
+    "warranty": "1 Year",
     "addedAt": "2026-08-05T21:55:00+05:30"
   },
   {
@@ -319,28 +308,7 @@
     "mrp": null,
     "price": 64500,
     "priceLabel": "Our price",
+    "warranty": "1 Year",
     "addedAt": "2026-08-05T21:50:00+05:30"
-  },
-  {
-    "id": "hp-zbook-fury-15-g7",
-    "brand": "HP",
-    "model": "ZBook Fury 15 G7",
-    "availabilityLabel": "Workstation",
-    "processor": "Intel Core i7 10th Gen",
-    "processorFamily": "Intel Core i7",
-    "processorImage": "https://commons.wikimedia.org/wiki/Special:FilePath/Intel_Core_i7_2020_logo.svg",
-    "ram": "16GB",
-    "storage": "512GB SSD",
-    "graphics": "NVIDIA 4GB",
-    "display": null,
-    "operatingSystem": null,
-    "features": [
-      "Webcam",
-      "Mobile workstation"
-    ],
-    "mrp": null,
-    "price": 71000,
-    "priceLabel": "Our price",
-    "addedAt": "2026-08-06T11:31:00+05:30"
   }
 ]

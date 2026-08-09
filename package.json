@@ -1,0 +1,13 @@
+{
+  "name": "hardnsoft-laptop-store",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static HARDNSOFT laptop and accessory storefront",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

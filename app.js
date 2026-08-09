@@ -1,6 +1,11 @@
 "use strict";
 
 const WHATSAPP_NUMBER = "917025402409";
+const {
+  getAccessorySpecifications,
+  getWarrantyLabel,
+  loadCatalogs
+} = Inventory;
 
 const state = {
   laptops: [],
@@ -30,6 +35,17 @@ const elements = {
   filterBadge: byId("filterBadge"),
   browseLaptops: byId("browseLaptops")
 };
+
+const prefersReducedMotion = window.matchMedia?.(
+  "(prefers-reduced-motion: reduce)"
+).matches;
+
+function scrollToElement(element) {
+  element?.scrollIntoView({
+    behavior: prefersReducedMotion ? "auto" : "smooth",
+    block: "start"
+  });
+}
 
 /* -------------------------------------------------------
    Utility functions
@@ -215,7 +231,7 @@ function createLaptopWhatsAppUrl(item) {
     `Graphics: ${item.graphics || "Integrated graphics"}`,
     `Selling price: ${formatPrice(item.price)}`,
     item.mrp ? `MRP: ${formatPrice(item.mrp)}` : "",
-    `Warranty: ${item.warranty || "1 year"}`,
+    `Warranty: ${getWarrantyLabel(item)}`,
     "",
     "Please confirm availability and the final Onam offer."
   ]
@@ -228,6 +244,7 @@ function createLaptopWhatsAppUrl(item) {
 }
 
 function createAccessoryWhatsAppUrl(item) {
+  const specifications = new Map(getAccessorySpecifications(item));
   const message = [
     "Hello HARDNSOFT,",
     "",
@@ -237,8 +254,15 @@ function createAccessoryWhatsAppUrl(item) {
     item.brand ? `Brand: ${item.brand}` : "",
     item.model ? `Model: ${item.model}` : "",
     item.productType ? `Type: ${item.productType}` : "",
-    item.connection ? `Connection: ${item.connection}` : "",
-    item.layout ? `Layout: ${item.layout}` : "",
+    specifications.get("Connection")
+      ? `Connection: ${specifications.get("Connection")}`
+      : "",
+    specifications.get("Keys")
+      ? `Keys: ${specifications.get("Keys")}`
+      : "",
+    specifications.get("Layout")
+      ? `Layout: ${specifications.get("Layout")}`
+      : "",
     `Selling price: ${formatPrice(item.price)}`,
     item.mrp ? `MRP: ${formatPrice(item.mrp)}` : "",
     item.warranty ? `Warranty: ${item.warranty}` : "",
@@ -260,6 +284,15 @@ function createAccessoryWhatsAppUrl(item) {
 function buildPricingHtml(item) {
   const price = Number(item.price);
   const mrp = Number(item.mrp);
+
+  if (!Number.isFinite(price) || price <= 0) {
+    return `
+      <div class="price-panel">
+        <div class="price-label">Price</div>
+        <div class="price">Price on request</div>
+      </div>
+    `;
+  }
 
   const hasValidMrp =
     Number.isFinite(mrp) &&
@@ -482,7 +515,7 @@ function laptopCard(item) {
 
             <dd class="warranty-value">
               ${escapeHtml(
-                item.warranty || "1 year warranty"
+                getWarrantyLabel(item)
               )}
             </dd>
           </div>
@@ -539,23 +572,7 @@ function accessoryCard(item) {
     `
     : "";
 
-  const specifications = [
-    ["Works with", item.compatibility],
-    ["Type", item.productType],
-    ["Connection", item.connection],
-    ["Keys", item.keyType],
-    ["Layout", item.layout],
-    ["Colour", item.colour],
-    [
-      "Backlight",
-      typeof item.backlight === "boolean"
-        ? item.backlight
-          ? "Yes"
-          : "No"
-        : null
-    ],
-    ["Warranty", item.warranty]
-  ].filter(([, value]) => value !== undefined && value !== null && value !== "");
+  const specifications = getAccessorySpecifications(item);
 
   const specificationsHtml = specifications
     .map(
@@ -743,10 +760,8 @@ function showTab(tabName, updateHash = true) {
 
       tab.classList.toggle("active", isActive);
 
-      tab.setAttribute(
-        "aria-current",
-        isActive ? "page" : "false"
-      );
+      tab.setAttribute("aria-selected", String(isActive));
+      tab.tabIndex = isActive ? 0 : -1;
     });
 
   if (updateHash) {
@@ -759,7 +774,7 @@ function showTab(tabName, updateHash = true) {
 
   window.scrollTo({
     top: 0,
-    behavior: "smooth"
+    behavior: prefersReducedMotion ? "auto" : "smooth"
   });
 }
 
@@ -767,10 +782,12 @@ function showTab(tabName, updateHash = true) {
    Filter panel
 ------------------------------------------------------- */
 
-function closeFilterPanel() {
+function closeFilterPanel(restoreFocus = false) {
   if (!elements.filterPanel) {
     return;
   }
+
+  const wasOpen = !elements.filterPanel.hidden;
 
   elements.filterPanel.hidden = true;
 
@@ -778,6 +795,10 @@ function closeFilterPanel() {
     "aria-expanded",
     "false"
   );
+
+  if (restoreFocus && wasOpen) {
+    elements.filterToggle?.focus();
+  }
 }
 
 function clearAllFilters() {
@@ -828,10 +849,7 @@ function startOnamEffects() {
 
   if (saleButton) {
     saleButton.addEventListener("click", () => {
-      byId("catalog")?.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
+      scrollToElement(byId("catalog"));
     });
   }
 }
@@ -846,6 +864,25 @@ function attachEvents() {
     .forEach((tab) => {
       tab.addEventListener("click", () => {
         showTab(tab.dataset.tab);
+      });
+
+      tab.addEventListener("keydown", (event) => {
+        const navigationKeys = ["ArrowLeft", "ArrowRight", "Home", "End"];
+        if (!navigationKeys.includes(event.key)) {
+          return;
+        }
+
+        event.preventDefault();
+        const tabs = [...document.querySelectorAll('[role="tab"]')];
+        const currentIndex = tabs.indexOf(tab);
+        const nextIndex = event.key === "Home"
+          ? 0
+          : event.key === "End"
+            ? tabs.length - 1
+            : (currentIndex + (event.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length;
+
+        tabs[nextIndex].focus();
+        showTab(tabs[nextIndex].dataset.tab);
       });
     });
 
@@ -897,6 +934,10 @@ function attachEvents() {
         "aria-expanded",
         String(shouldOpen)
       );
+
+      if (shouldOpen) {
+        elements.searchInput?.focus();
+      }
     }
   );
 
@@ -908,10 +949,7 @@ function attachEvents() {
   elements.browseLaptops?.addEventListener(
     "click",
     () => {
-      byId("catalog")?.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
+      scrollToElement(byId("catalog"));
     }
   );
 
@@ -928,7 +966,7 @@ function attachEvents() {
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
-      closeFilterPanel();
+      closeFilterPanel(true);
     }
   });
 }
@@ -951,32 +989,20 @@ async function loadJson(url) {
   return response.json();
 }
 
-function showLoadError(error) {
+function showLoadError(grid, countElement, catalogName, error) {
   console.error(error);
 
-  const message =
-    error instanceof Error
-      ? error.message
-      : "Inventory could not be loaded.";
-
-  if (elements.resultCount) {
-    elements.resultCount.textContent = message;
+  if (countElement) {
+    countElement.textContent = `${catalogName} could not be loaded.`;
   }
 
-  if (elements.accessoryCount) {
-    elements.accessoryCount.textContent =
-      message;
-  }
-
-  if (elements.laptopGrid) {
-    elements.laptopGrid.innerHTML = `
+  if (grid) {
+    grid.innerHTML = `
       <div class="empty-state">
         <h2>Unable to load inventory</h2>
 
         <p>
-          Check that laptops.json and
-          accessories.json are in the same
-          folder as index.html.
+          Please refresh the page or contact HARDNSOFT on WhatsApp.
         </p>
       </div>
     `;
@@ -1006,27 +1032,10 @@ async function initialiseWebsite() {
 
   showTab(initialTab, false);
 
-  try {
-    const [laptops, accessories] =
-      await Promise.all([
-        loadJson("laptops.json"),
-        loadJson("accessories.json")
-      ]);
+  const catalogs = await loadCatalogs(loadJson);
 
-    if (!Array.isArray(laptops)) {
-      throw new Error(
-        "laptops.json must contain an array."
-      );
-    }
-
-    if (!Array.isArray(accessories)) {
-      throw new Error(
-        "accessories.json must contain an array."
-      );
-    }
-
-    state.laptops = laptops;
-    state.accessories = accessories;
+  if (catalogs.laptops.status === "fulfilled") {
+    state.laptops = catalogs.laptops.items;
 
     populateSelect(
       elements.brandFilter,
@@ -1065,9 +1074,25 @@ async function initialiseWebsite() {
     );
 
     renderLaptops();
+  } else {
+    showLoadError(
+      elements.laptopGrid,
+      elements.resultCount,
+      "Laptops",
+      catalogs.laptops.error
+    );
+  }
+
+  if (catalogs.accessories.status === "fulfilled") {
+    state.accessories = catalogs.accessories.items;
     renderAccessories();
-  } catch (error) {
-    showLoadError(error);
+  } else {
+    showLoadError(
+      elements.accessoryGrid,
+      elements.accessoryCount,
+      "Accessories",
+      catalogs.accessories.error
+    );
   }
 }
 

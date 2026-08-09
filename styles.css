@@ -108,7 +108,7 @@ nav {
 .brand {
   font-size: 1.35rem;
   font-weight: 800;
-  letter-spacing: -0.05em;
+  letter-spacing: 0;
 }
 
 .brand span,
@@ -220,7 +220,7 @@ nav {
   margin: 0;
   font-size: clamp(2rem, 4vw, 3.7rem);
   line-height: 1.03;
-  letter-spacing: -0.055em;
+  letter-spacing: 0;
 }
 
 .hero-description {
@@ -306,7 +306,7 @@ nav {
   margin: 0;
   font-size: clamp(1.8rem, 3.5vw, 2.8rem);
   line-height: 1.08;
-  letter-spacing: -0.05em;
+  letter-spacing: 0;
 }
 
 .result-count {
@@ -501,7 +501,7 @@ textarea:focus {
 .brand-mark {
   font-size: 0.95rem;
   font-weight: 800;
-  letter-spacing: -0.04em;
+  letter-spacing: 0;
 }
 
 .product-laptop-art {
@@ -569,7 +569,7 @@ textarea:focus {
   margin: 0;
   font-size: 0.87rem;
   line-height: 1.25;
-  letter-spacing: -0.025em;
+  letter-spacing: 0;
 }
 
 /* Processor */
@@ -795,7 +795,7 @@ textarea:focus {
   margin-top: 0;
   font-size: 1.08rem;
   font-weight: 800;
-  letter-spacing: -0.04em;
+  letter-spacing: 0;
 }
 
 .saving {
@@ -1394,4 +1394,19 @@ footer {
   .onam-showcase { min-height: 245px; }
   .showcase-laptop { width: 88%; margin-top: 55px; }
   .pookalam { left: -14%; bottom: -12px; }
+}
+
+[role="tablist"] {
+  display: contents;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

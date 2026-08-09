@@ -1,67 +1,70 @@
 # HARDNSOFT Laptop Store
 
-A static single-page storefront for HARDNSOFT's Onam Dhamakka Sale 2026. The site shows festival laptop deals and accessories directly from local JSON inventory files, with no backend required.
+A lightweight single-page storefront for HARDNSOFT's Onam Dhamakka Sale 2026. It presents laptop and accessory inventory from local JSON files and sends customer enquiries to WhatsApp. No application backend or database is required.
 
-## Purpose
+## Features
 
-- Present laptops and accessories in a responsive catalog.
-- Let customers browse product details, compare pricing, and contact sales over WhatsApp.
-- Keep the site lightweight, mobile-friendly, and easy to maintain as a static deployment.
+- Responsive laptop and accessory catalogs
+- Laptop search, filters, and sorting
+- MRP, selling-price, savings, and warranty-status display
+- Product-specific WhatsApp enquiry links
+- Independent loading and error handling for each catalog
+- Inventory validation for required fields, prices, dates, and unique IDs
 
-## Architecture
+## Project structure
 
-- `index.html` — site shell, header, hero section, tabs for laptops/accessories, and footer.
-- `styles.css` — responsive styling, layout, card design, and Onam-themed visual touches.
-- `app.js` — client-side UI logic, filter handling, tab switching, data loading, and WhatsApp link generation.
-- `laptops.json` — laptop inventory data for the catalog.
-- `accessories.json` — accessory inventory data for the catalog.
+- `index.html` - page structure and accessible catalog tabs
+- `styles.css` - responsive layout and visual design
+- `app.js` - rendering, filtering, interactions, and data loading
+- `inventory.js` - shared inventory validation and normalization
+- `laptops.json` - laptop inventory
+- `accessories.json` - accessory inventory
+- `server.js` - dependency-free local static server
+- `tests/` - Node test suite for inventory behavior
 
-## How it works
+## Requirements
 
-- The page loads in the browser and fetches inventory JSON using `fetch`.
-- `app.js` stores loaded data in memory and renders product cards dynamically.
-- Users can filter laptops by brand, processor, RAM, storage, price, and search text.
-- Each product card includes a WhatsApp CTA that pre-fills a message for quick enquiries.
+- Node.js 20 or newer
 
-## Running locally
-
-Start the local Node server so the upload page can save inventory directly to the JSON files.
+## Run locally
 
 ```powershell
-npm install
 npm start
 ```
 
-Then open:
+Open `http://127.0.0.1:8000`. A local server is required because browsers do not reliably allow pages opened with `file://` to fetch JSON files.
 
-```text
-http://127.0.0.1:8000
+To use another port:
+
+```powershell
+$env:PORT=8080; npm start
 ```
 
-If you prefer a static-only preview without save functionality, open `index.html` directly or use any static file server.
+## Test
 
-## Inventory management
+```powershell
+npm test
+```
 
-- Add or update laptops in `laptops.json`.
-- Add or update accessories in `accessories.json`.
-- Use unique `id` values for every item.
-- Laptops are sorted by `addedAt` automatically, with newest items shown first.
+The same suite runs in GitHub Actions before deployment.
 
-## Customization
+## Inventory maintenance
 
-- Edit text and branding in `index.html`.
-- Update layout and theme in `styles.css`.
-- Change filtering and rendering rules in `app.js`.
+Edit `laptops.json` or `accessories.json` directly. Every item must have:
 
-## Bulk inventory upload
+- A unique, non-empty `id`
+- A positive numeric `price`
+- A valid `addedAt` date when the field is present
+- `brand` and `model` for laptops
+- `name` for accessories
 
-- Open `upload.html` in your browser.
-- Select either `laptops.json` or `accessories.json` as the target file.
-- Upload the current inventory file and paste new rows in the text box.
-- Click `Parse rows` to convert the pasted data into JSON items.
-- Click `Merge and download` to save the updated inventory file locally.
+Every catalog item currently includes a `1 Year` warranty. Keep the `warranty` field explicit when adding inventory; missing values are displayed as `Confirm warranty` instead of being guessed.
 
-The page helps organize tab-separated or comma-separated rows into the correct JSON structure for the selected inventory file.
+After changing inventory, run `npm test`. Invalid data blocks the GitHub Pages deployment.
+
+## Deployment
+
+Pushes to `main` run the tests and deploy the repository to GitHub Pages after they pass. The catalog has no server-side save feature; inventory changes must be committed to the JSON files.
 
 ## Contact
 

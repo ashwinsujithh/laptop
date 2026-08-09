@@ -28,15 +28,17 @@
       </div>
 
       <nav aria-label="Primary navigation">
-        <button class="nav-tab active" type="button" data-tab="laptops">Laptops</button>
-        <button class="nav-tab" type="button" data-tab="accessories">Accessories</button>
+        <div role="tablist" aria-label="Product catalogs">
+          <button id="laptopsTab" class="nav-tab active" type="button" role="tab" aria-controls="laptops" aria-selected="true" data-tab="laptops">Laptops</button>
+          <button id="accessoriesTab" class="nav-tab" type="button" role="tab" aria-controls="accessories" aria-selected="false" tabindex="-1" data-tab="accessories">Accessories</button>
+        </div>
         <a class="whatsapp-link" href="https://wa.me/917025402409" target="_blank" rel="noopener noreferrer">WhatsApp</a>
       </nav>
     </div>
   </header>
 
   <main class="container page-shell">
-    <section class="tab-panel active" id="laptops" data-panel="laptops">
+    <section class="tab-panel active" id="laptops" role="tabpanel" aria-labelledby="laptopsTab" data-panel="laptops">
       <div class="hero onam-hero">
         <div class="onam-glow onam-glow-one"></div>
         <div class="onam-glow onam-glow-two"></div>
@@ -48,11 +50,11 @@
           <div class="onam-kicker"><span>കേരളത്തിന്റെ സ്വന്തം ഓഫർ</span><b>ONAM 2026</b></div>
           <p class="eyebrow">HARDNSOFT festive laptop offers</p>
           <h1><span>Onam</span> Dhamakka Sale <em>2026</em></h1>
-          <p class="hero-description">Celebrate this Onam with powerful laptops at festive prices. Compare processor, RAM, storage, graphics, MRP and our special selling price. Every laptop includes warranty support.</p>
+          <p class="hero-description">Celebrate this Onam with powerful laptops at festive prices. Compare processor, RAM, storage, graphics, MRP and our special selling price. Every product includes a one-year warranty.</p>
 
           <div class="offer-strip" aria-label="Onam sale benefits">
             <div><strong>Festive Price</strong><span>Special Onam deals</span></div>
-            <div><strong>1 & 3 Year</strong><span>Warranty options</span></div>
+            <div><strong>1 Year</strong><span>Warranty included</span></div>
             <div><strong>Limited Stock</strong><span>Book before sold out</span></div>
           </div>
 
@@ -82,7 +84,7 @@
 
         <div class="filter-wrap">
           <button id="filterToggle" class="filter-toggle" type="button" aria-expanded="false" aria-controls="filterPanel">Filters <span id="filterBadge" hidden>0</span></button>
-          <div id="filterPanel" class="filter-panel" hidden>
+          <div id="filterPanel" class="filter-panel" role="region" aria-label="Laptop filters" hidden>
             <label class="search-field"><span>Search</span><input id="searchInput" type="search" placeholder="Brand, model or specification" autocomplete="off" /></label>
             <div class="filter-grid">
               <label><span>Brand</span><select id="brandFilter"><option value="">All brands</option></select></label>
@@ -103,7 +105,7 @@
       <div id="emptyState" class="empty-state" hidden><h2>No laptops found</h2><p>Try removing one or more filters.</p></div>
     </section>
 
-    <section class="tab-panel" id="accessories" data-panel="accessories" hidden>
+    <section class="tab-panel" id="accessories" role="tabpanel" aria-labelledby="accessoriesTab" data-panel="accessories" hidden>
       <div class="catalog-toolbar">
         <div><p class="eyebrow">Onam hardware offers</p><h1 class="section-title">Accessories</h1><p id="accessoryCount" class="result-count">Loading accessories…</p></div>
       </div>
@@ -118,6 +120,7 @@
     </div>
   </footer>
 
+  <script src="inventory.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
