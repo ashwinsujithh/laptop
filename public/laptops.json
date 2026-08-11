@@ -18,10 +18,106 @@
       "Premium compact design"
     ],
     "mrp": 157945,
-    "price": 103000,
+    "price": 103500,
     "priceLabel": "Our price",
     "warranty": "1 Year",
-    "addedAt": "2026-08-05T22:55:00+05:30"
+    "addedAt": "2026-08-11T14:17:00+05:30"
+  },
+  {
+    "id": "hp-omen-16-xd0015ax",
+    "brand": "HP",
+    "model": "OMEN 16-XD0015AX",
+    "availabilityLabel": "Gaming choice",
+    "processor": "AMD Ryzen 7 7th Gen",
+    "processorFamily": "AMD Ryzen 7",
+    "processorImage": "https://commons.wikimedia.org/wiki/Special:FilePath/AMD_Ryzen_logo.svg",
+    "ram": "16GB",
+    "storage": "1TB SSD",
+    "graphics": "NVIDIA RTX 4060 8GB",
+    "display": "16.1-inch",
+    "operatingSystem": "Not specified",
+    "features": [
+      "Gaming laptop",
+      "Dedicated graphics",
+      "Large SSD storage"
+    ],
+    "mrp": null,
+    "price": 104000,
+    "priceLabel": "Our price",
+    "warranty": "1 Year",
+    "addedAt": "2026-08-11T14:16:00+05:30"
+  },
+  {
+    "id": "hp-omen-16-xf0059ax",
+    "brand": "HP",
+    "model": "OMEN 16-XF0059AX",
+    "availabilityLabel": "Gaming choice",
+    "processor": "AMD Ryzen 7",
+    "processorFamily": "AMD Ryzen 7",
+    "processorImage": "https://commons.wikimedia.org/wiki/Special:FilePath/AMD_Ryzen_logo.svg",
+    "ram": "16GB",
+    "storage": "512GB SSD",
+    "graphics": "NVIDIA RTX 4060",
+    "display": "16.1-inch",
+    "operatingSystem": "Not specified",
+    "features": [
+      "Gaming laptop",
+      "Dedicated graphics",
+      "RTX graphics"
+    ],
+    "mrp": null,
+    "price": 105000,
+    "priceLabel": "Our price",
+    "warranty": "1 Year",
+    "addedAt": "2026-08-11T14:15:00+05:30"
+  },
+  {
+    "id": "hp-omen-gaming-16-n0345ax",
+    "brand": "HP",
+    "model": "OMEN Gaming 16-N0345AX",
+    "availabilityLabel": "Gaming choice",
+    "processor": "AMD Ryzen 7 6800H",
+    "processorFamily": "AMD Ryzen 7",
+    "processorImage": "https://commons.wikimedia.org/wiki/Special:FilePath/AMD_Ryzen_logo.svg",
+    "ram": "16GB DDR5 4800MHz",
+    "storage": "1TB SSD",
+    "graphics": "NVIDIA RTX 3070 Ti 8GB",
+    "display": "16.1-inch",
+    "operatingSystem": "Not specified",
+    "features": [
+      "Gaming laptop",
+      "Dedicated graphics",
+      "DDR5 memory"
+    ],
+    "mrp": null,
+    "price": 100000,
+    "priceLabel": "Our price",
+    "warranty": "1 Year",
+    "addedAt": "2026-08-11T14:14:00+05:30"
+  },
+  {
+    "id": "hp-pavilion-x360-14-ek1021tu-7z1p9pa",
+    "brand": "HP",
+    "model": "Pavilion x360 14-EK1021TU (7Z1P9PA)",
+    "availabilityLabel": "Premium stock",
+    "processor": "Intel Core i7-1355U 13th Gen",
+    "processorFamily": "Intel Core i7",
+    "processorImage": "https://commons.wikimedia.org/wiki/Special:FilePath/Intel_Core_i7_2020_logo.svg",
+    "ram": "16GB",
+    "storage": "512GB SSD",
+    "graphics": "Integrated",
+    "display": "14-inch convertible touchscreen",
+    "operatingSystem": "Not specified",
+    "features": [
+      "360-degree convertible",
+      "Touchscreen",
+      "SSD storage"
+    ],
+    "mrp": null,
+    "price": 88500,
+    "priceLabel": "Our price",
+    "warranty": "1 Year",
+    "addedAt": "2026-08-11T14:13:00+05:30"
   },
   {
     "id": "hp-pavilion-gaming-15-ec1512ax-rf-2",
@@ -258,10 +354,10 @@
       "Dedicated graphics"
     ],
     "mrp": null,
-    "price": 69500,
+    "price": 77000,
     "priceLabel": "Our price",
     "warranty": "1 Year",
-    "addedAt": "2026-08-05T22:30:00+05:30"
+    "addedAt": "2026-08-11T14:12:00+05:30"
   },
   {
     "id": "hp-pavilion-gaming-15-ec1512ax",
